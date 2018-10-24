@@ -1,0 +1,54 @@
+.wp-post-of-the-day {
+    margin: 10px 0;
+}
+
+.wp-post-of-the-day a,
+.wp-post-of-the-day a:active,
+.wp-post-of-the-day a:hover,
+.wp-post-of-the-day a:visited,
+.wp-post-of-the-day a:link {
+    border: none;
+    color: inherit;
+    text-decoration: none;
+}
+
+.wp-post-of-the-day__title,
+.wp-post-of-the-day__image,
+.wp-post-of-the-day__excerpt,
+.wp-post-of-the-day__content {
+    display: block;
+    margin: 10px 0;
+}
+
+.wp-post-of-the-day__title {
+    font-weight: bold;
+}
+
+/* Groups */
+.wp-post-of-the-day.--has-groups {
+    margin: 0 -10px;
+}
+
+.wp-post-of-the-day.--has-groups > a {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.wp-post-of-the-day.--has-groups .wp-post-of-the-day__group {
+    flex-grow: 1;
+    flex-basis: 0;
+    padding: 10px;
+}
+
+/* Errors */
+.wp-post-of-the-day-error {
+    border: 1px solid red;
+    color: red;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.wp-post-of-the-day-error p:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
