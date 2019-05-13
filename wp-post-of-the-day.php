@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Plugin Name:  Post of the Day
+ * Plugin Name:  WP Post of the Day
  * Plugin URI:
  * Description:  Displays a new post every day.
  * Version:      1.0
