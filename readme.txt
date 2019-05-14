@@ -1,13 +1,13 @@
 === WP Post of the Day ===
-Contributors: woodent, wpscholar
+Contributors: wpscholar
 Donate link: https://www.paypal.me/wpscholar
 Tags: post rotation, daily post, different post, post of the day
 Requires PHP: 5.3
 Requires at least: 4.5
-Tested up to: 4.9.8
+Tested up to: 5.2
 Stable tag: 1.0
-License: GPLv3
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
+License: GPL2
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Shows a new post every day.
 
@@ -78,6 +78,6 @@ Keep in mind that any of these attributes can be combined as needed.  Example: `
 
 = 1.0 =
 
-* Tested in WordPress version 4.9.8
+* Tested in WordPress version 5.2
 
 == Upgrade Notice ==

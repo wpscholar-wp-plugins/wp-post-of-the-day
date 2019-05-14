@@ -1,0 +1,24 @@
+{
+  "name": "wp-post-of-the-day",
+  "private": true,
+  "description": "Shows a new WordPress post every day.",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wpscholar/wp-post-of-the-day.git"
+  },
+  "author": "Micah Wood <micah@wpscholar.com>",
+  "license": "GPL-2.0-or-later",
+  "bugs": {
+    "url": "https://github.com/wpscholar/wp-post-of-the-day/issues"
+  },
+  "homepage": "https://github.com/wpscholar/wp-post-of-the-day#readme",
+  "devDependencies": {
+    "del": "^4.1.1",
+    "gulp": "^4.0.2",
+    "shelljs": "^0.8.3"
+  }
+}

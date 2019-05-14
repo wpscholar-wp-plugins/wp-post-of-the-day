@@ -2,7 +2,7 @@
 
 /*
  * Plugin Name:  WP Post of the Day
- * Plugin URI:
+ * Plugin URI:   https://wordpress.org/plugins/wp-post-of-the-day/
  * Description:  Displays a new post every day.
  * Version:      1.0
  * Author:       Micah Wood
@@ -233,7 +233,6 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 			$post_types = array_filter( array_map( 'trim', explode( ',', $atts['post_type'] ) ) );
 
 			$query_args = array(
-				'orderby'        => 'rand',
 				'post_type'      => $post_types,
 				'posts_per_page' => 100,
 			);
