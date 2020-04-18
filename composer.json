@@ -1,0 +1,13 @@
+{
+    "name": "wpscholar/wp-post-of-the-day",
+    "description": "Displays a new WordPress post every day.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Micah Wood",
+            "email": "micah@wpscholar.com"
+        }
+    ],
+    "require": {}
+}
