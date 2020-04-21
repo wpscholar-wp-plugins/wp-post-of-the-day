@@ -1,17 +1,24 @@
 <?php
-
-/*
+/**
  * Plugin Name:  WP Post of the Day
  * Plugin URI:   https://wordpress.org/plugins/wp-post-of-the-day/
  * Description:  Displays a new post every day.
  * Version:      1.0
  * Author:       Micah Wood
  * Author URI:   https://wpscholar.com
+ * Requires at least: 4.5
+ * Requires PHP: 5.3
+ * Text Domain:  wp-post-of-the-day
+ * Domain Path:  languages
  * License:      GPL2
  * License URI:  https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:  wp-post-of-the-day
- * Domain Path:  /languages
+ *
+ * Copyright 2019-2020 by Micah Wood - All rights reserved.
+ *
+ * @package wp-post-of-the-day
  */
+
+define( 'WP_POST_OF_THE_DAY_VERSION', '1.0' );
 
 if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 
@@ -39,13 +46,13 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 		 * Register our stylesheet.
 		 */
 		public static function wp_enqueue_scripts() {
-			wp_register_style( self::SHORTCODE, plugins_url( '/assets/wp-post-of-the-day.css', __FILE__ ) );
+			wp_register_style( self::SHORTCODE, plugins_url( '/assets/wp-post-of-the-day.css', __FILE__ ), array(), WP_POST_OF_THE_DAY_VERSION );
 		}
 
 		/**
 		 * Shortcode handler
 		 *
-		 * @param array $atts
+		 * @param array $atts Shortcode attributes.
 		 *
 		 * @return bool|string
 		 */
@@ -93,8 +100,8 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 		/**
 		 * Render the post.
 		 *
-		 * @param WP_Post $post
-		 * @param array $atts
+		 * @param WP_Post $post Post object.
+		 * @param array   $atts Shortcode attributes.
 		 *
 		 * @return string
 		 */
@@ -102,15 +109,20 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 
 			$image_size = $atts['size'];
 
-			$groups = array_filter( array_map( function ( $group ) {
-				return self::list_to_array( $group );
-			}, self::list_to_array( $atts['show'], '|' ) ) );
+			$groups = array_filter(
+				array_map(
+					function ( $group ) {
+						return self::list_to_array( $group );
+					},
+					self::list_to_array( $atts['show'], '|' )
+				)
+			);
 
 			$can_show = array( 'title', 'image', 'excerpt', 'content' );
-			$show = array_merge( ...$groups );
+			$show     = array_merge( ...$groups );
 
-			$show_title = in_array( 'title', $show, true );
-			$show_image = in_array( 'image', $show, true );
+			$show_title   = in_array( 'title', $show, true );
+			$show_image   = in_array( 'image', $show, true );
 			$show_excerpt = in_array( 'excerpt', $show, true );
 			$show_content = in_array( 'content', $show, true );
 
@@ -145,10 +157,17 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 
 			return sprintf(
 				'<div class="wp-post-of-the-day %s"><a href="%s">%s</a></div>',
-				esc_attr( implode( ' ', array_filter( array(
-					count( $groups ) > 1 ? '--has-groups' : '',
-					$atts['class']
-				) ) ) ),
+				esc_attr(
+					implode(
+						' ',
+						array_filter(
+							array(
+								count( $groups ) > 1 ? '--has-groups' : '',
+								$atts['class'],
+							)
+						)
+					)
+				),
 				esc_url( get_the_permalink( $post ) ),
 				implode( '', array_filter( $display ) )
 			);
@@ -156,11 +175,12 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 		}
 
 		/**
-		 * @param $atts
+		 * Find post to display.
 		 *
-		 * @throws InvalidArgumentException
+		 * @param array $atts Shortcode attributes.
 		 *
 		 * @return WP_Post|null
+		 * @throws InvalidArgumentException If theme doesn't support post thumbnails.
 		 */
 		public static function find_post( $atts ) {
 
@@ -184,7 +204,9 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 			if ( ! empty( $atts['taxonomy'] ) && ! taxonomy_exists( $atts['taxonomy'] ) ) {
 				throw new InvalidArgumentException(
 					self::setup_error_message(
-						sprintf( __( 'Sorry, taxonomy "%s" is invalid. Valid options are: %s. Please check your shortcode implementation.', 'wp-post-of-the-day' ),
+						sprintf(
+						/* translators: %1$s is the taxonomy name, %2$s is a list of viable taxonomies (comma separated) */
+							__( 'Sorry, taxonomy "%1$s" is invalid. Valid options are: %2$s. Please check your shortcode implementation.', 'wp-post-of-the-day' ),
 							$atts['taxonomy'],
 							implode( ', ', get_taxonomies() )
 						),
@@ -220,7 +242,8 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 					throw new InvalidArgumentException(
 						self::setup_error_message(
 							sprintf(
-								__( 'Sorry, post type "%s" is invalid. Valid options are: %s. Please check your shortcode implementation.', 'wp-post-of-the-day' ),
+							/* translators: %1$s is the post type, %2$s is a list of viable post types */
+								__( 'Sorry, post type "%1$s" is invalid. Valid options are: %2$s. Please check your shortcode implementation.', 'wp-post-of-the-day' ),
 								$post_type,
 								implode( ', ', get_post_types( array( 'public' => true ) ) )
 							),
@@ -251,7 +274,7 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 				$terms = self::parse_id_list( $atts['terms'] );
 				if ( 'category' === $atts['taxonomy'] ) {
 					$query_args['category__in'] = $terms;
-				} else if ( 'post_tag' === $atts['taxonomy'] ) {
+				} elseif ( 'post_tag' === $atts['taxonomy'] ) {
 					$query_args['tag__in'] = $terms;
 				} else {
 					$query_args['tax_query'] = array(
@@ -286,6 +309,8 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 			$posts = $query->posts;
 
 			/**
+			 * Selected random post.
+			 *
 			 * @var WP_Post $post
 			 */
 			$post = $posts[ array_rand( $posts ) ];
@@ -313,7 +338,7 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 		 * @return WP_Post|null
 		 */
 		public static function get_post() {
-			$post = null;
+			$post    = null;
 			$post_id = self::get_active_post_id();
 			if ( $post_id ) {
 				$post = get_post( $post_id );
@@ -322,7 +347,7 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 				}
 			}
 
-			return $post ?: null;
+			return $post ?: null; // phpcs:ignore WordPress.PHP.DisallowShortTernary.Found
 		}
 
 		/**
@@ -331,7 +356,7 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 		 * @return bool
 		 */
 		public static function has_post_expired() {
-			return current_time( 'timestamp' ) >= self::get_post_expiration();
+			return time() >= self::get_post_expiration();
 		}
 
 		/**
@@ -346,7 +371,7 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 		/**
 		 * Set the active post ID.
 		 *
-		 * @param int $id
+		 * @param int $id The post ID.
 		 */
 		public static function set_active_post_id( $id ) {
 			update_option( self::SHORTCODE, absint( $id ), true );
@@ -364,7 +389,7 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 		/**
 		 * Set the post expiration timestamp.
 		 *
-		 * @param int $expiration
+		 * @param int $expiration The expiration timestamp.
 		 */
 		public static function set_post_expiration( $expiration ) {
 			update_option( self::SHORTCODE . '_expiration', absint( $expiration ), true );
@@ -382,7 +407,7 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 		/**
 		 * Store post IDs that have already been featured so we don't repeat ourselves.
 		 *
-		 * @param array $ids
+		 * @param array $ids The post IDs.
 		 */
 		public static function set_used_post_ids( array $ids ) {
 			update_option( self::SHORTCODE . '_used_ids', array_filter( $ids ), false );
@@ -394,7 +419,7 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 		 * @return int
 		 */
 		public static function get_next_expiration() {
-			$dateTime = self::get_date_time( current_time( 'timestamp' ) );
+			$dateTime = self::get_date_time( time() );
 			$dateTime->setTime( 23, 59, 59 );
 
 			return $dateTime->getTimestamp();
@@ -403,9 +428,10 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 		/**
 		 * Get a DateTime object in the current time zone.
 		 *
-		 * @param int $timestamp
+		 * @param int $timestamp The Unix timestamp.
 		 *
 		 * @return DateTime
+		 * @throws Exception If DateTime is invalid.
 		 */
 		public static function get_date_time( $timestamp ) {
 			$dt = new DateTime( 'now', self::get_date_time_zone() );
@@ -424,10 +450,10 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 			if ( ! empty( $timezone_string ) ) {
 				return new DateTimeZone( $timezone_string );
 			}
-			$offset = get_option( 'gmt_offset' );
-			$hours = (int) $offset;
+			$offset  = get_option( 'gmt_offset' );
+			$hours   = (int) $offset;
 			$minutes = abs( ( $offset - (int) $offset ) * 60 );
-			$offset = sprintf( '%+03d:%02d', $hours, $minutes );
+			$offset  = sprintf( '%+03d:%02d', $hours, $minutes );
 
 			return new DateTimeZone( $offset );
 		}
@@ -435,9 +461,9 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 		/**
 		 * Setup error message.
 		 *
-		 * @param string $message
+		 * @param string $message Message to display.
 		 *
-		 * @param string $example
+		 * @param string $example Shortcode example.
 		 *
 		 * @return string
 		 */
@@ -453,7 +479,7 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 		/**
 		 * Parse an ID list into an array.
 		 *
-		 * @param string $list
+		 * @param string $list Comma separated list of post IDs.
 		 *
 		 * @return int[]
 		 */
@@ -469,8 +495,8 @@ if ( ! class_exists( 'WpPostOfTheDay' ) ) {
 		/**
 		 * Convert a list (string) to an array
 		 *
-		 * @param string $list
-		 * @param string $delimiter
+		 * @param string $list      List of items.
+		 * @param string $delimiter Delimiter.
 		 *
 		 * @return array
 		 */
