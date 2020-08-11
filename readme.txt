@@ -4,7 +4,7 @@ Donate link: https://www.paypal.me/wpscholar
 Tags: post rotation, daily post, different post, post of the day
 Requires PHP: 5.3
 Requires at least: 4.5
-Tested up to: 5.4
+Tested up to: 5.5
 Stable tag: 1.0
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
